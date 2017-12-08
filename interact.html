@@ -9,6 +9,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://cdn.rawgit.com/yahoo/xss-filters/master/dist/xss-filters.min.js"></script>
+  <script src="libs/moment.js"></script>
   <script src="https://unpkg.com/vue"></script>
   <script src="libs/humanize-duration.js"></script>
   <script src="script/constants.js"></script>
@@ -45,7 +46,7 @@
   <div id="web3Div" hidden='true'>
     <div id="BOPVue" align='center'>
       <div id="verifiedOutput" style="font-size:1.8rem"></div>
-      <p>BOP at address: {{BOP.address}}</p>
+      <p>BP at address: {{BOP.address}}</p>
       <div class="well">
         <div style="font-size:2rem">{{BOP.title}}</div>
         <p style="font-size:1rem;color:orange">(Scroll down and check the events for more details!)</p>
@@ -85,7 +86,7 @@
                 <img class="img-responsive" style="min-width:9rem;width:9rem;" src="resources/arrow_deposit.png">
                 <div style="position:relative;left:1rem;top:-2.2rem"><ether-output :wei=BOP.amountDeposited></ether-output></div>
                 <div style="position:relative;left:1rem;top:-2.2rem">funded</div><br>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addfunds-modal">Add Funds</button>
+                <button v-if="userIsPayer" type="button" class="btn btn-success" data-toggle="modal" data-target="#addfunds-modal">Add Funds</button>
               </div>
               <div class="col-xs-4">
                 <div class="well" style="background-color:#ccffcc;margin-bottom:2px">

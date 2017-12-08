@@ -117,6 +117,17 @@ function createBOPVue() {
   });
 }
 
+function getBlockCallback(err, blockInfo) {
+  if (err) console.log("Error when fetching block info:", err);
+  else {
+    eventLogVue.events.forEach(function(e) {
+      if (e.blockNumber == blockInfo.number) {
+        e.timestamp = blockInfo.timestamp;
+      }
+    });
+  }
+}
+
 function createEventLogVue() {
   return new Vue({
     el: "#eventLogVue",
@@ -129,8 +140,11 @@ function createEventLogVue() {
         eventWatcher.get(function(err, events) {
           if (err) console.log("Error when fetching events:",err);
           else {
-            //we have events!
-            console.log(events);
+            //console.log(events);
+            events.forEach(function(e) {
+              web3.eth.getBlock(e.blockNumber, getBlockCallback);
+              e.timestamp = 0;
+            });
             eventLogVue.events = events;
           }
         });
@@ -191,7 +205,7 @@ function releaseFromForm() {
   var amountInWei = web3.toWei(amountInEth,'ether');
   if (amountInWei <= 0)
     alert("Error: the amount must be greater than 0.");
-  else if (amountInWei > BOPVue.BOP.balance)
+  else if (BOPVue.BOP.balance.lessThan(amountInWei))
     alert("Error: the Payment does not contain that much ether!\nRequested release: " + formatWeiValue(amountInWei) + "\nAvailable balance: " + formatWeiValue(BOPVue.BOP.balance));
   else
     callRelease(amountInWei);
@@ -206,7 +220,7 @@ function burnFromForm() {
   var amountInWei = web3.toWei(amountInEth,'ether');
   if (amountInWei <= 0)
     alert("Error: the amount must be greater than 0.");
-  else if (amountInWei > BOPVue.BOP.balance)
+  else if (BOPVue.BOP.balance.lessThan(amountInWei))
     alert("Error: the Payment does not contain that much ether!\nRequested burn: " + formatWeiValue(amountInWei) + "\nAvailable balance: " + formatWeiValue(BOPVue.BOP.balance));
   else
     callBurn(amountInWei);
